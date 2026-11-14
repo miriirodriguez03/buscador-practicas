@@ -1,0 +1,54 @@
+# ─────────────────────────────────────────────────────────────
+#  CONFIGURACIÓN DEL BUSCADOR DE PRÁCTICAS
+#  Reglas: usa ESPACIOS (nunca tabuladores) y respeta la sangría.
+#  Las líneas que empiezan por # son comentarios y no hacen nada.
+# ─────────────────────────────────────────────────────────────
+
+# Tu nombre de usuario de GitHub, sin @ (para que te llegue el aviso)
+usuario_github: tu-usuario
+
+# Lo que el programa escribe en el buscador de cada portal
+terminos_busqueda:
+  - intern
+  - internship
+  - trainee
+  - thesis
+  - working student
+
+# El TÍTULO de la oferta debe contener al menos una de estas palabras.
+# Escríbelas sin tildes (practicas, no prácticas): el programa ignora las tildes.
+palabras_titulo:
+  - intern
+  - internship
+  - interns
+  - trainee
+  - thesis
+  - working student
+  - werkstudent
+  - praktikum
+  - praktikant
+  - practicas
+  - becario
+  - stage
+  - co-op
+
+# Si el título contiene alguna de estas, la oferta se descarta
+palabras_excluidas:
+  - senior
+  - manager
+  - director
+  - principal
+
+# Países o ciudades que te interesan, en INGLÉS (Spain, Germany...).
+# Para no filtrar por ubicación, borra la lista y deja:  ubicaciones: []
+ubicaciones:
+  - Spain
+  - Germany
+  - Netherlands
+
+# Empresas que usan Workday. Copia el bloque de 2 líneas para añadir más.
+empresas:
+  - nombre: Philips
+    url: https://philips.wd3.myworkdayjobs.com/jobs-and-careers
+  - nombre: Medtronic
+    url: https://medtronic.wd1.myworkdayjobs.com/MedtronicCareers
