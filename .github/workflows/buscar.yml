@@ -1,0 +1,41 @@
+name: Buscar ofertas de prácticas
+
+on:
+  schedule:
+    - cron: "0 7,16 * * *"   # todos los días a las 07:00 y 16:00 UTC
+  workflow_dispatch:          # permite lanzarlo a mano con un botón
+
+permissions:
+  contents: write   # para guardar ofertas_vistas.csv
+  issues: write     # para crear el aviso
+
+jobs:
+  buscar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Descargar el repositorio
+        uses: actions/checkout@v5
+
+      - name: Preparar Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Instalar librerías
+        run: pip install -r requirements.txt
+
+      - name: Buscar ofertas
+        run: python buscar_ofertas.py
+
+      - name: Guardar la lista de ofertas vistas
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ofertas_vistas.csv
+          git diff --cached --quiet || (git commit -m "Ofertas actualizadas $(date +%F)" && git push)
+
+      - name: Avisar si hay ofertas nuevas
+        if: hashFiles('nuevas_ofertas.md') != ''
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh issue create --title "Nuevas ofertas de prácticas – $(date +%d/%m/%Y)" --body-file nuevas_ofertas.md
