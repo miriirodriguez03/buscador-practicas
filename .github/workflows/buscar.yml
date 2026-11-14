@@ -7,11 +7,13 @@ on:
 
 permissions:
   contents: write   # para guardar ofertas_vistas.csv
-  issues: write     # para crear el aviso
+  issues: write     # para crear los avisos
 
 jobs:
   buscar:
     runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Descargar el repositorio
         uses: actions/checkout@v5
@@ -34,8 +36,16 @@ jobs:
           git add ofertas_vistas.csv
           git diff --cached --quiet || (git commit -m "Ofertas actualizadas $(date +%F)" && git push)
 
-      - name: Avisar si hay ofertas nuevas
-        if: hashFiles('nuevas_ofertas.md') != ''
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: gh issue create --title "Nuevas ofertas de prácticas – $(date +%d/%m/%Y)" --body-file nuevas_ofertas.md
+      - name: Preparar las etiquetas de los avisos
+        if: hashFiles('nuevas_espana.md', 'nuevas_internacional.md') != ''
+        run: |
+          gh label create "España" --color "C60B1E" --description "Ofertas ubicadas en España" --force
+          gh label create "Internacional" --color "1D76DB" --description "Ofertas fuera de España" --force
+
+      - name: Aviso de ofertas en España
+        if: hashFiles('nuevas_espana.md') != ''
+        run: gh issue create --title "🇪🇸 Ofertas en España – $(date +%d/%m/%Y)" --label "España" --body-file nuevas_espana.md
+
+      - name: Aviso de ofertas en otros países
+        if: hashFiles('nuevas_internacional.md') != ''
+        run: gh issue create --title "🌍 Ofertas en otros países – $(date +%d/%m/%Y)" --label "Internacional" --body-file nuevas_internacional.md
