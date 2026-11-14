@@ -5,7 +5,7 @@
 # ─────────────────────────────────────────────────────────────
 
 # Tu nombre de usuario de GitHub, sin @ (para que te llegue el aviso)
-usuario_github: tu-usuario
+usuario_github: miriirodriguez03
 
 # Lo que el programa escribe en el buscador de cada portal
 terminos_busqueda:
@@ -45,6 +45,7 @@ ubicaciones:
   - Spain
   - Germany
   - Netherlands
+  - Switzerland
 
 # Empresas que usan Workday. Copia el bloque de 2 líneas para añadir más.
 empresas:
