@@ -15,7 +15,7 @@ terminos_busqueda:
   - graduate
   - beca
   - working student
-  
+
 # El TÍTULO de la oferta debe contener al menos una de estas palabras.
 # Escríbelas sin tildes (practicas, no prácticas): el programa ignora las tildes.
 palabras_titulo:
@@ -42,12 +42,24 @@ palabras_excluidas:
   - senior
   - manager
   - director
-  - principal
 
-# Países o ciudades que te interesan, en INGLÉS (Spain, Germany...).
-# Para no filtrar por ubicación, borra la lista y deja:  ubicaciones: []
-ubicaciones:
+# ── CLASIFICACIÓN POR UBICACIÓN ──────────────────────────────
+# Una oferta va al aviso "España" si su ubicación contiene alguna de
+# estas palabras. Las ciudades sirven de respaldo por si el portal
+# no indica el país.
+ubicaciones_espana:
   - Spain
+  - España
+  - Madrid
+  - Barcelona
+  - Sant Cugat
+  - Alcobendas
+  - Tres Cantos
+
+# Todas las demás van al aviso "Otros países". Si quieres limitarlo a
+# ciertos países, escríbelos aquí EN INGLÉS. Para recibir ofertas de
+# cualquier país, deja la línea así:  ubicaciones_internacionales: []
+ubicaciones_internacionales:
   - Germany
   - Netherlands
   - Switzerland
