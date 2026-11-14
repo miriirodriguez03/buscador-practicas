@@ -12,9 +12,10 @@ terminos_busqueda:
   - intern
   - internship
   - trainee
-  - thesis
+  - graduate
+  - beca
   - working student
-
+  
 # El TÍTULO de la oferta debe contener al menos una de estas palabras.
 # Escríbelas sin tildes (practicas, no prácticas): el programa ignora las tildes.
 palabras_titulo:
@@ -22,14 +23,18 @@ palabras_titulo:
   - internship
   - interns
   - trainee
+  - graduate
   - thesis
   - working student
   - werkstudent
   - praktikum
-  - praktikant
   - practicas
+  - beca
   - becario
+  - becaria
   - stage
+  - alternance
+  - apprentice
   - co-op
 
 # Si el título contiene alguna de estas, la oferta se descarta
@@ -49,7 +54,43 @@ ubicaciones:
 
 # Empresas que usan Workday. Copia el bloque de 2 líneas para añadir más.
 empresas:
+  # --- Tecnología médica ---
   - nombre: Philips
     url: https://philips.wd3.myworkdayjobs.com/jobs-and-careers
   - nombre: Medtronic
     url: https://medtronic.wd1.myworkdayjobs.com/MedtronicCareers
+  - nombre: MiniMed
+    url: https://mdtkangaroo.wd108.myworkdayjobs.com/MiniMedCareers
+  - nombre: GE HealthCare
+    url: https://gehc.wd5.myworkdayjobs.com/GEHC_ExternalSite
+  - nombre: CompuGroup Medical
+    url: https://cgm.wd3.myworkdayjobs.com/cgm
+  - nombre: Abbott
+    url: https://abbott.wd5.myworkdayjobs.com/abbottcareers
+  - nombre: Johnson & Johnson
+    url: https://jj.wd5.myworkdayjobs.com/JJ
+  - nombre: Stryker
+    url: https://stryker.wd1.myworkdayjobs.com/StrykerCareers
+  # --- Farmacéuticas ---
+  - nombre: Roche
+    url: https://roche.wd3.myworkdayjobs.com/roche-ext
+  - nombre: Sanofi
+    url: https://sanofi.wd3.myworkdayjobs.com/SanofiCareers
+  - nombre: Sanofi (programas de estudiantes)
+    url: https://sanofi.wd3.myworkdayjobs.com/StudentPrograms
+  - nombre: Novartis
+    url: https://novartis.wd3.myworkdayjobs.com/Novartis_Careers
+  - nombre: Pfizer
+    url: https://pfizer.wd1.myworkdayjobs.com/PfizerCareers
+  - nombre: AstraZeneca
+    url: https://astrazeneca.wd3.myworkdayjobs.com/Careers
+  - nombre: GSK
+    url: https://gsk.wd5.myworkdayjobs.com/GSKCareers
+  - nombre: MSD
+    url: https://msd.wd5.myworkdayjobs.com/SearchJobs
+  - nombre: Lilly
+    url: https://lilly.wd5.myworkdayjobs.com/LLY
+  - nombre: Takeda
+    url: https://takeda.wd3.myworkdayjobs.com/External
+  - nombre: Almirall
+    url: https://almirall.wd3.myworkdayjobs.com/External
