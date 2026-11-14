@@ -1,7 +1,7 @@
 """
 Buscador de ofertas de prácticas en portales Workday.
-Paso 2 del sistema de candidaturas: detecta ofertas nuevas, las filtra
-por título y ubicación, las guarda en ofertas_vistas.csv y prepara un aviso.
+Detecta ofertas nuevas, las filtra por título, las clasifica en
+ESPAÑA / OTROS PAÍSES y prepara un aviso separado para cada categoría.
 No hace falta tocar este archivo: todo se configura en config.yaml.
 """
 import csv
@@ -18,8 +18,12 @@ import yaml
 
 ARCHIVO_CONFIG = "config.yaml"
 ARCHIVO_VISTAS = "ofertas_vistas.csv"
-ARCHIVO_AVISO = "nuevas_ofertas.md"
-COLUMNAS = ["empresa", "titulo", "ubicacion", "publicada", "pasa_filtro", "detectada_el", "url"]
+AVISOS = {  # categoría -> (archivo del aviso, título que aparece dentro del aviso)
+    "espana": ("nuevas_espana.md", "🇪🇸 ofertas nuevas en España"),
+    "internacional": ("nuevas_internacional.md", "🌍 ofertas nuevas en otros países"),
+}
+COLUMNAS = ["empresa", "titulo", "ubicacion", "categoria", "publicada",
+            "pasa_filtro", "detectada_el", "url"]
 MAX_POR_TERMINO = 100   # resultados máximos que se revisan por término y empresa
 MAX_EN_AVISO = 100      # ofertas máximas que se listan en un mismo aviso
 PAUSA = 1.0             # segundos entre peticiones, para no sobrecargar los portales
@@ -28,6 +32,7 @@ CABECERAS = {
     "Accept": "application/json",
     "User-Agent": "Mozilla/5.0 (buscador personal de practicas)",
 }
+ESPANA_POR_DEFECTO = ["Spain", "España"]
 
 
 def normalizar(texto):
@@ -91,6 +96,20 @@ def ubicacion_detallada(host, tenant, portal, ruta):
         return "", False
 
 
+def clasificar(ubicacion, verificada, espana, internacionales):
+    """Devuelve (categoria, pasa_filtro, ubicacion_mostrada).
+    - España: si alguna de sus ubicaciones está en España (también si comparte con otros países).
+    - Otros países: el resto, filtrado por 'ubicaciones_internacionales' si la lista no está vacía.
+    - Si no se pudo comprobar la ubicación, va a 'Otros países' marcada para que la revises."""
+    if contiene_alguna(ubicacion, espana):
+        return "espana", True, ubicacion
+    if not verificada:
+        return "internacional", True, f"{ubicacion} (ubicación sin verificar)"
+    if internacionales:
+        return "internacional", contiene_alguna(ubicacion, internacionales), ubicacion
+    return "internacional", True, ubicacion
+
+
 def cargar_vistas():
     if not os.path.exists(ARCHIVO_VISTAS):
         return {}
@@ -106,30 +125,32 @@ def guardar_vistas(vistas):
             escritor.writerow({c: fila.get(c, "") for c in COLUMNAS})
 
 
-def escribir_aviso(nuevas, usuario):
-    """Crea nuevas_ofertas.md solo si hay ofertas nuevas (GitHub lo convierte en un aviso)."""
-    if os.path.exists(ARCHIVO_AVISO):
-        os.remove(ARCHIVO_AVISO)
-    if not nuevas:
-        return
+def escribir_avisos(nuevas, usuario):
+    """Crea un archivo de aviso por categoría, solo si esa categoría tiene ofertas nuevas."""
     limpiar = lambda t: (t or "").replace("|", "/")
-    lineas = []
-    if usuario and usuario != "tu-usuario":
-        lineas.append(f"@{usuario.lstrip('@')}")
-    lineas += [f"**{len(nuevas)} ofertas nuevas** que encajan con tus filtros:", "",
-               "| Empresa | Puesto | Ubicación | Publicada |", "|---|---|---|---|"]
-    for o in nuevas[:MAX_EN_AVISO]:
-        lineas.append(f"| {limpiar(o['empresa'])} | [{limpiar(o['titulo'])}]({o['url']}) "
-                      f"| {limpiar(o['ubicacion'])} | {limpiar(o['publicada'])} |")
-    if len(nuevas) > MAX_EN_AVISO:
-        lineas.append(f"\n…y {len(nuevas) - MAX_EN_AVISO} más. Las tienes todas en `{ARCHIVO_VISTAS}`.")
-    texto = "\n".join(lineas) + "\n"
-    with open(ARCHIVO_AVISO, "w", encoding="utf-8") as f:
-        f.write(texto)
     resumen = os.environ.get("GITHUB_STEP_SUMMARY")  # resumen visible en la página de la ejecución
-    if resumen:
-        with open(resumen, "a", encoding="utf-8") as f:
+    for categoria, (archivo, titulo) in AVISOS.items():
+        if os.path.exists(archivo):
+            os.remove(archivo)
+        ofertas = [o for o in nuevas if o["categoria"] == categoria]
+        if not ofertas:
+            continue
+        lineas = []
+        if usuario and usuario != "tu-usuario":
+            lineas.append(f"@{usuario.lstrip('@')}")
+        lineas += [f"**{len(ofertas)} {titulo}** que encajan con tus filtros:", "",
+                   "| Empresa | Puesto | Ubicación | Publicada |", "|---|---|---|---|"]
+        for o in ofertas[:MAX_EN_AVISO]:
+            lineas.append(f"| {limpiar(o['empresa'])} | [{limpiar(o['titulo'])}]({o['url']}) "
+                          f"| {limpiar(o['ubicacion'])} | {limpiar(o['publicada'])} |")
+        if len(ofertas) > MAX_EN_AVISO:
+            lineas.append(f"\n…y {len(ofertas) - MAX_EN_AVISO} más. Las tienes todas en `{ARCHIVO_VISTAS}`.")
+        texto = "\n".join(lineas) + "\n"
+        with open(archivo, "w", encoding="utf-8") as f:
             f.write(texto)
+        if resumen:
+            with open(resumen, "a", encoding="utf-8") as f:
+                f.write(texto + "\n")
 
 
 def main():
@@ -140,7 +161,9 @@ def main():
     terminos = config.get("terminos_busqueda") or ["intern"]
     palabras_titulo = config.get("palabras_titulo") or []
     excluidas = config.get("palabras_excluidas") or []
-    ubicaciones = config.get("ubicaciones") or []
+    espana = config.get("ubicaciones_espana") or ESPANA_POR_DEFECTO
+    # 'ubicaciones' es el nombre antiguo de la lista: se sigue aceptando
+    internacionales = config.get("ubicaciones_internacionales", config.get("ubicaciones")) or []
 
     vistas = cargar_vistas()
     nuevas = []
@@ -161,34 +184,34 @@ def main():
             fallos += 1
             continue
 
-        nuevas_empresa = 0
+        cuenta = {"espana": 0, "internacional": 0}
         for ruta, oferta in encontradas.items():
             url = f"https://{host}/{portal}{ruta}"
             if url in vistas:
                 continue  # ya la habíamos visto en otra ejecución
             titulo = oferta.get("title", "")
             ubicacion = oferta.get("locationsText", "")
+            categoria = ""
             pasa = contiene_alguna(titulo, palabras_titulo) and not contiene_alguna(titulo, excluidas)
-            if pasa and ubicaciones:
+            if pasa:
                 detalle, ok = ubicacion_detallada(host, tenant, portal, ruta)
                 time.sleep(PAUSA)
-                if ok:
-                    ubicacion = detalle
-                    pasa = contiene_alguna(ubicacion, ubicaciones)
-                else:
-                    ubicacion += " (ubicación sin verificar)"  # mejor avisar que perderla
+                categoria, pasa, ubicacion = clasificar(detalle if ok else ubicacion, ok,
+                                                        espana, internacionales)
             fila = {"empresa": nombre, "titulo": titulo, "ubicacion": ubicacion,
-                    "publicada": oferta.get("postedOn", ""), "pasa_filtro": "si" if pasa else "no",
-                    "detectada_el": hoy, "url": url}
+                    "categoria": categoria, "publicada": oferta.get("postedOn", ""),
+                    "pasa_filtro": "si" if pasa else "no", "detectada_el": hoy, "url": url}
             vistas[url] = fila
             if pasa:
                 nuevas.append(fila)
-                nuevas_empresa += 1
-        print(f"✅ {nombre}: {len(encontradas)} resultados revisados, {nuevas_empresa} nuevas que encajan")
+                cuenta[categoria] += 1
+        print(f"✅ {nombre}: {len(encontradas)} resultados revisados, "
+              f"{cuenta['espana']} nuevas en España, {cuenta['internacional']} nuevas en otros países")
 
     guardar_vistas(vistas)
-    escribir_aviso(nuevas, config.get("usuario_github"))
-    print(f"\nTotal: {len(nuevas)} ofertas nuevas que encajan con tus filtros.")
+    escribir_avisos(nuevas, config.get("usuario_github"))
+    total_es = sum(1 for o in nuevas if o["categoria"] == "espana")
+    print(f"\nTotal: {total_es} nuevas en España y {len(nuevas) - total_es} nuevas en otros países.")
 
     if empresas and fallos == len(empresas):
         print("❌ No se pudo consultar ninguna empresa. Revisa las direcciones de config.yaml.")
