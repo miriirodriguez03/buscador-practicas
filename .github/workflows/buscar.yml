@@ -2,16 +2,24 @@ name: Buscar ofertas de prácticas
 
 on:
   schedule:
-    - cron: "0 7,16 * * *"   # todos los días a las 07:00 y 16:00 UTC
+    # Todos los días a las 07:17 y 16:17 UTC. Se evita el minuto 0 porque
+    # a esa hora GitHub retrasa o salta muchas ejecuciones programadas.
+    - cron: "17 7,16 * * *"
   workflow_dispatch:          # permite lanzarlo a mano con un botón
 
 permissions:
   contents: write   # para guardar ofertas_vistas.csv
   issues: write     # para crear los avisos
 
+# Nunca dos ejecuciones a la vez: se pisarían al guardar ofertas_vistas.csv
+concurrency:
+  group: buscar-ofertas
+  cancel-in-progress: false
+
 jobs:
   buscar:
     runs-on: ubuntu-latest
+    timeout-minutes: 45
     env:
       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
@@ -22,6 +30,7 @@ jobs:
         uses: actions/setup-python@v6
         with:
           python-version: "3.12"
+          cache: pip
 
       - name: Instalar librerías
         run: pip install -r requirements.txt
@@ -29,13 +38,9 @@ jobs:
       - name: Buscar ofertas
         run: python buscar_ofertas.py
 
-      - name: Guardar la lista de ofertas vistas
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add ofertas_vistas.csv
-          git diff --cached --quiet || (git commit -m "Ofertas actualizadas $(date +%F)" && git push)
-
+      # Los avisos se crean ANTES de guardar la lista de ofertas vistas.
+      # Si crear un aviso falla, la lista no se guarda y la próxima ejecución
+      # vuelve a avisar de esas ofertas: mejor un aviso repetido que uno perdido.
       - name: Preparar las etiquetas de los avisos
         if: hashFiles('nuevas_espana.md', 'nuevas_internacional.md') != ''
         run: |
@@ -49,3 +54,22 @@ jobs:
       - name: Aviso de ofertas en otros países
         if: hashFiles('nuevas_internacional.md') != ''
         run: gh issue create --title "🌍 Ofertas en otros países – $(date +%d/%m/%Y)" --label "Internacional" --body-file nuevas_internacional.md
+
+      - name: Guardar la lista de ofertas vistas
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ofertas_vistas.csv
+          if git diff --cached --quiet; then
+            echo "No hay cambios en ofertas_vistas.csv"
+            exit 0
+          fi
+          git commit -m "Ofertas actualizadas $(date +%F)"
+          # Si mientras tanto has subido cambios (p. ej. editando config.yaml),
+          # se integran antes de subir para que el push no falle.
+          for intento in 1 2 3; do
+            git pull --rebase && git push && exit 0
+            echo "El push ha fallado (intento $intento); reintentando en 10 s"
+            sleep 10
+          done
+          exit 1
