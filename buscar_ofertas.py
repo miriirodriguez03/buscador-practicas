@@ -33,6 +33,12 @@ CABECERAS = {
     "User-Agent": "Mozilla/5.0 (buscador personal de practicas)",
 }
 ESPANA_POR_DEFECTO = ["Spain", "España"]
+# Si un portal responde 429 (demasiadas peticiones) o un error temporal 5xx, se espera y se reintenta
+REINTENTOS = (20, 60, 120)       # segundos de espera antes de cada reintento
+ESPERA_MAXIMA_REINTENTO = 300    # tope cuando el portal indica cuánto esperar (cabecera Retry-After)
+PRESUPUESTO_ESPERAS = 15 * 60    # máximo de segundos de espera por reintentos en toda la ejecución
+CODIGOS_REINTENTABLES = {429, 500, 502, 503, 504}
+_esperado = 0.0                  # segundos ya esperados por reintentos en esta ejecución
 
 
 def normalizar(texto):
@@ -61,14 +67,38 @@ def datos_workday(url):
     return host, tenant, segmentos[0]
 
 
+def segundos_retry_after(respuesta):
+    """Segundos que el portal pide esperar en la cabecera Retry-After (None si no lo indica)."""
+    valor = (respuesta.headers.get("Retry-After") or "").strip()
+    return float(valor) if valor.isdigit() and int(valor) > 0 else None
+
+
+def peticion(metodo, url, **opciones):
+    """Hace la petición HTTP. Si el portal responde 429 o un error temporal 5xx, espera y
+    reintenta (respetando Retry-After y el presupuesto total de esperas). Si no se recupera,
+    lanza el error igual que antes."""
+    global _esperado
+    for intento in range(len(REINTENTOS) + 1):
+        respuesta = requests.request(metodo, url, headers=CABECERAS, timeout=30, **opciones)
+        if respuesta.status_code not in CODIGOS_REINTENTABLES or intento == len(REINTENTOS):
+            break
+        espera = min(segundos_retry_after(respuesta) or REINTENTOS[intento], ESPERA_MAXIMA_REINTENTO)
+        if _esperado + espera > PRESUPUESTO_ESPERAS:
+            break  # ya se ha esperado bastante en esta ejecución: no se insiste más
+        print(f"   ⏳ {urlparse(url).netloc} respondió {respuesta.status_code}; reintento en {espera:.0f} s")
+        time.sleep(espera)
+        _esperado += espera
+    respuesta.raise_for_status()
+    return respuesta
+
+
 def buscar_en_workday(host, tenant, portal, termino):
     """Devuelve las ofertas que el portal muestra al buscar 'termino'."""
     api = f"https://{host}/wday/cxs/{tenant}/{portal}/jobs"
     ofertas, offset = [], 0
     while offset < MAX_POR_TERMINO:
         cuerpo = {"appliedFacets": {}, "limit": 20, "offset": offset, "searchText": termino}
-        respuesta = requests.post(api, json=cuerpo, headers=CABECERAS, timeout=30)
-        respuesta.raise_for_status()
+        respuesta = peticion("POST", api, json=cuerpo)
         pagina = respuesta.json().get("jobPostings", [])
         ofertas.extend(pagina)
         if len(pagina) < 20:
@@ -82,9 +112,7 @@ def ubicacion_detallada(host, tenant, portal, ruta):
     """Abre la ficha de la oferta para conocer su ubicación completa (país incluido).
     Devuelve (texto, True) si lo consigue o ("", False) si no."""
     try:
-        respuesta = requests.get(f"https://{host}/wday/cxs/{tenant}/{portal}{ruta}",
-                                 headers=CABECERAS, timeout=30)
-        respuesta.raise_for_status()
+        respuesta = peticion("GET", f"https://{host}/wday/cxs/{tenant}/{portal}{ruta}")
         info = respuesta.json().get("jobPostingInfo", {})
         trozos = [info.get("location", "")]
         for extra in info.get("additionalLocations", []) or []:
@@ -168,6 +196,7 @@ def main():
     vistas = cargar_vistas()
     nuevas = []
     fallos = 0
+    limitadas = 0  # empresas que fallaron porque el portal respondió 429
     hoy = date.today().isoformat()
 
     for empresa in empresas:
@@ -182,6 +211,8 @@ def main():
         except Exception as error:
             print(f"⚠️  {nombre}: no se pudo consultar ({error})")
             fallos += 1
+            if getattr(getattr(error, "response", None), "status_code", None) == 429:
+                limitadas += 1
             continue
 
         cuenta = {"espana": 0, "internacional": 0}
@@ -214,7 +245,12 @@ def main():
     print(f"\nTotal: {total_es} nuevas en España y {len(nuevas) - total_es} nuevas en otros países.")
 
     if empresas and fallos == len(empresas):
-        print("❌ No se pudo consultar ninguna empresa. Revisa las direcciones de config.yaml.")
+        if limitadas == fallos:
+            print("❌ Todos los portales han respondido 429 (demasiadas peticiones) incluso tras reintentar: "
+                  "Workday está limitando las peticiones que llegan desde GitHub. No es un problema de "
+                  "config.yaml; la próxima ejecución lo volverá a intentar.")
+        else:
+            print("❌ No se pudo consultar ninguna empresa. Revisa las direcciones de config.yaml.")
         sys.exit(1)
 
 
