@@ -2,6 +2,10 @@
 .venv/
 __pycache__/
 *.pyc
+.pytest_cache/
+
+# Copias de trabajo temporales (git worktree) y ajustes locales del editor
+.claude/
 
 # Avisos que genera cada ejecución (se publican como issues, no se guardan)
 nuevas_espana.md

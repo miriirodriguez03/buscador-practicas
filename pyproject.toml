@@ -1,0 +1,10 @@
+[project]
+name = "buscador-practicas"
+version = "0.2.0"
+description = "Buscador automático de ofertas de prácticas en portales de empleo"
+requires-python = ">=3.12"
+dependencies = ["requests", "PyYAML"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

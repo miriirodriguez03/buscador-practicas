@@ -1,0 +1,29 @@
+name: Tests
+
+# Comprueba el código en cada cambio. No consulta Workday: usa respuestas grabadas.
+on:
+  push:
+    paths-ignore:
+      - "ofertas_vistas.csv"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  pytest:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Instalar librerías
+        run: pip install -r requirements-dev.txt
+
+      - name: Ejecutar los tests
+        run: python -m pytest -q

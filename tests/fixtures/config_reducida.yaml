@@ -1,0 +1,49 @@
+usuario_github: miriirodriguez03
+terminos_busqueda:
+- intern
+- internship
+- trainee
+- graduate
+- beca
+- working student
+palabras_titulo:
+- intern
+- internship
+- interns
+- trainee
+- graduate
+- thesis
+- working student
+- werkstudent
+- praktikum
+- practicas
+- beca
+- becario
+- becaria
+- stage
+- alternance
+- apprentice
+- co-op
+palabras_excluidas:
+- senior
+- manager
+- director
+ubicaciones_espana:
+- Spain
+- España
+- Madrid
+- Barcelona
+- Sant Cugat
+- Alcobendas
+- Tres Cantos
+ubicaciones_internacionales:
+- Germany
+- Netherlands
+- Switzerland
+empresas:
+- nombre: Medtronic
+  url: https://medtronic.wd1.myworkdayjobs.com/MedtronicCareers
+- nombre: CompuGroup Medical
+  url: https://cgm.wd3.myworkdayjobs.com/cgm
+- nombre: Almirall
+  url: https://almirall.wd3.myworkdayjobs.com/External
