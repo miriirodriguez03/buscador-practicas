@@ -1,0 +1,14 @@
+# Entorno de Python
+.venv/
+__pycache__/
+*.pyc
+
+# Avisos que genera cada ejecución (se publican como issues, no se guardan)
+nuevas_espana.md
+nuevas_internacional.md
+
+# Registros de las ejecuciones en el PC
+logs/
+
+# Secretos locales
+.env

@@ -88,8 +88,9 @@ empresas:
     url: https://roche.wd3.myworkdayjobs.com/roche-ext
   - nombre: Sanofi
     url: https://sanofi.wd3.myworkdayjobs.com/SanofiCareers
-  - nombre: Sanofi (programas de estudiantes)
-    url: https://sanofi.wd3.myworkdayjobs.com/StudentPrograms
+  # Desactivada: el portal responde 403 "permission denied" (no es público).
+  # - nombre: Sanofi (programas de estudiantes)
+  #   url: https://sanofi.wd3.myworkdayjobs.com/StudentPrograms
   - nombre: Novartis
     url: https://novartis.wd3.myworkdayjobs.com/Novartis_Careers
   - nombre: Pfizer
@@ -100,9 +101,11 @@ empresas:
     url: https://gsk.wd5.myworkdayjobs.com/GSKCareers
   - nombre: MSD
     url: https://msd.wd5.myworkdayjobs.com/SearchJobs
-  - nombre: Lilly
-    url: https://lilly.wd5.myworkdayjobs.com/LLY
-  - nombre: Takeda
-    url: https://takeda.wd3.myworkdayjobs.com/External
+  # Desactivadas: estas direcciones ya no existen (el portal da error 500
+  # y la API 422). Hay que buscar su dirección de Workday actual.
+  # - nombre: Lilly
+  #   url: https://lilly.wd5.myworkdayjobs.com/LLY
+  # - nombre: Takeda
+  #   url: https://takeda.wd3.myworkdayjobs.com/External
   - nombre: Almirall
     url: https://almirall.wd3.myworkdayjobs.com/External

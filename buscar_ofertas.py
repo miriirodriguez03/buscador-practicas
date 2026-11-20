@@ -39,6 +39,7 @@ ESPERA_MAXIMA_REINTENTO = 300    # tope cuando el portal indica cuánto esperar 
 PRESUPUESTO_ESPERAS = 15 * 60    # máximo de segundos de espera por reintentos en toda la ejecución
 CODIGOS_REINTENTABLES = {429, 500, 502, 503, 504}
 _esperado = 0.0                  # segundos ya esperados por reintentos en esta ejecución
+_respuestas = {}                 # código HTTP -> número de respuestas (para el diagnóstico final)
 
 
 def normalizar(texto):
@@ -80,6 +81,7 @@ def peticion(metodo, url, **opciones):
     global _esperado
     for intento in range(len(REINTENTOS) + 1):
         respuesta = requests.request(metodo, url, headers=CABECERAS, timeout=30, **opciones)
+        _respuestas[respuesta.status_code] = _respuestas.get(respuesta.status_code, 0) + 1
         if respuesta.status_code not in CODIGOS_REINTENTABLES or intento == len(REINTENTOS):
             break
         espera = min(segundos_retry_after(respuesta) or REINTENTOS[intento], ESPERA_MAXIMA_REINTENTO)
@@ -206,7 +208,8 @@ def main():
             encontradas = {}
             for termino in terminos:
                 for oferta in buscar_en_workday(host, tenant, portal, termino):
-                    encontradas[oferta["externalPath"]] = oferta
+                    if oferta.get("externalPath"):  # algunos resultados llegan sin enlace: se ignoran
+                        encontradas[oferta["externalPath"]] = oferta
                 time.sleep(PAUSA)
         except Exception as error:
             print(f"⚠️  {nombre}: no se pudo consultar ({error})")
@@ -243,6 +246,9 @@ def main():
     escribir_avisos(nuevas, config.get("usuario_github"))
     total_es = sum(1 for o in nuevas if o["categoria"] == "espana")
     print(f"\nTotal: {total_es} nuevas en España y {len(nuevas) - total_es} nuevas en otros países.")
+    codigos = ", ".join(f"{c}: {n}" for c, n in sorted(_respuestas.items()))
+    print(f"Peticiones por código HTTP -> {codigos or 'ninguna'} "
+          f"(esperado en reintentos: {_esperado:.0f} s; empresas con error: {fallos}/{len(empresas)})")
 
     if empresas and fallos == len(empresas):
         if limitadas == fallos:
