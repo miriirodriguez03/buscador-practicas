@@ -1,6 +1,7 @@
 """Avisos en Markdown: un archivo por categoría, que luego se publica como issue."""
 import os
 
+from buscador.fechas import formato_corto
 from buscador.modelos import ESPANA, INTERNACIONAL
 
 AVISOS = {  # categoría -> (archivo del aviso, título que aparece dentro del aviso)
@@ -13,8 +14,17 @@ def _limpiar(texto):
     return (texto or "").replace("|", "/")
 
 
+def _ubicacion(o):
+    return o.ubicacion + (" (ubicación sin verificar)" if o.ubicacion_verificada == "no" else "")
+
+
+def _publicada(o):
+    """Fecha exacta si se conoce (p. ej. '30/10/2026'); si no, el texto del portal."""
+    return formato_corto(o.fecha_publicacion) if o.fecha_exacta and o.fecha_publicacion else o.publicada
+
+
 def texto_aviso(ofertas, titulo, usuario, max_en_aviso, archivo_vistas):
-    """Markdown con la tabla de ofertas de una categoría."""
+    """Markdown con la tabla de ofertas (objetos Registro) de una categoría."""
     lineas = []
     if usuario and usuario != "tu-usuario":
         lineas.append(f"@{usuario.lstrip('@')}")
@@ -22,7 +32,7 @@ def texto_aviso(ofertas, titulo, usuario, max_en_aviso, archivo_vistas):
                "| Empresa | Puesto | Ubicación | Publicada |", "|---|---|---|---|"]
     for o in ofertas[:max_en_aviso]:
         lineas.append(f"| {_limpiar(o.empresa)} | [{_limpiar(o.titulo)}]({o.url}) "
-                      f"| {_limpiar(o.ubicacion)} | {_limpiar(o.publicada)} |")
+                      f"| {_limpiar(_ubicacion(o))} | {_limpiar(_publicada(o))} |")
     if len(ofertas) > max_en_aviso:
         lineas.append(f"\n…y {len(ofertas) - max_en_aviso} más. Las tienes todas en `{archivo_vistas}`.")
     return "\n".join(lineas) + "\n"

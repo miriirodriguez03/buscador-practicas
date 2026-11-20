@@ -866,7 +866,7 @@
   },
   "estado": 200,
   "json": {
-   "total": 386,
+   "total": 385,
    "jobPostings": [
     {
      "title": "Sales Trainee",
@@ -1355,12 +1355,6 @@
      "postedOn": "Posted 30+ Days Ago"
     },
     {
-     "title": "Robotic Startup Specialist",
-     "externalPath": "/job/Herzliya-Tel-Aviv-Israel/Robotic-Startup-Specialist_R60201-1",
-     "locationsText": "Herzliya, Tel Aviv, Israel",
-     "postedOn": "Posted 30+ Days Ago"
-    },
-    {
      "title": "Clinical Specialist",
      "externalPath": "/job/Petaling-Jaya-Selangor-Malaysia/Clinical-Specialist_R77485-2",
      "locationsText": "Petaling Jaya, Selangor, Malaysia",
@@ -1395,6 +1389,12 @@
      "externalPath": "/job/Mumbai-Maharashtra-India/Senior-Compliance-Specialist_R80905-1",
      "locationsText": "2 Locations",
      "postedOn": "Posted 21 Days Ago"
+    },
+    {
+     "title": "Associate Remote Technical Service Specialist (Electrophysiology Technologies)",
+     "externalPath": "/job/State-of-Minnesota-United-States-of-America/Associate-Remote-Technical-Service-Specialist--Electrophysiology-Technologies-_R82136-1",
+     "locationsText": "State of Minnesota, United States of America",
+     "postedOn": "Posted 4 Days Ago"
     }
    ]
   }
@@ -1412,12 +1412,6 @@
   "json": {
    "total": 0,
    "jobPostings": [
-    {
-     "title": "Associate Remote Technical Service Specialist (Electrophysiology Technologies)",
-     "externalPath": "/job/State-of-Minnesota-United-States-of-America/Associate-Remote-Technical-Service-Specialist--Electrophysiology-Technologies-_R82136-1",
-     "locationsText": "State of Minnesota, United States of America",
-     "postedOn": "Posted 4 Days Ago"
-    },
     {
      "title": "Technical Consultant",
      "externalPath": "/job/Manchester-Manchester-United-Kingdom/Technical-Consultant_R80237-1",
@@ -1531,6 +1525,12 @@
      "externalPath": "/job/Mollsfeld-Meerbusch-Germany/Customer-Care-Service---Repair-Representative--m-w-d--Italian-Speaker_R78296-1",
      "locationsText": "3 Locations",
      "postedOn": "Posted 30+ Days Ago"
+    },
+    {
+     "title": "Senior Robotic Clinical Specialist",
+     "externalPath": "/job/Budapest-Budapest-Hungary/Senior-Robotic-Clinical-Specialist_R81391",
+     "locationsText": "Budapest, Budapest, Hungary",
+     "postedOn": "Posted 7 Days Ago"
     }
    ]
   }
@@ -1928,7 +1928,9 @@
     "country": {
      "descriptor": "Malaysia",
      "id": "972dc4ba8d454bc0b893ff84b1529077"
-    }
+    },
+    "startDate": "2026-10-08",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -1943,7 +1945,9 @@
     "country": {
      "descriptor": "China",
      "id": "6cb77610a8a543aea2d6bc10457e35d4"
-    }
+    },
+    "startDate": "2026-10-16",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -1958,7 +1962,9 @@
     "country": {
      "descriptor": "China",
      "id": "6cb77610a8a543aea2d6bc10457e35d4"
-    }
+    },
+    "startDate": "2026-09-08",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -1973,7 +1979,9 @@
     "country": {
      "descriptor": "South Africa",
      "id": "4db3c26940b944919b83612cc1193eed"
-    }
+    },
+    "startDate": "2026-11-05",
+    "postedOn": "Posted 15 Days Ago"
    }
   }
  },
@@ -1988,7 +1996,9 @@
     "country": {
      "descriptor": "China",
      "id": "6cb77610a8a543aea2d6bc10457e35d4"
-    }
+    },
+    "startDate": "2026-10-23",
+    "postedOn": "Posted 28 Days Ago"
    }
   }
  },
@@ -2003,7 +2013,9 @@
     "country": {
      "descriptor": "China",
      "id": "6cb77610a8a543aea2d6bc10457e35d4"
-    }
+    },
+    "startDate": "2026-10-30",
+    "postedOn": "Posted 21 Days Ago"
    }
   }
  },
@@ -2018,7 +2030,9 @@
     "country": {
      "descriptor": "China",
      "id": "6cb77610a8a543aea2d6bc10457e35d4"
-    }
+    },
+    "startDate": "2026-11-09",
+    "postedOn": "Posted 11 Days Ago"
    }
   }
  },
@@ -2033,7 +2047,9 @@
     "country": {
      "descriptor": "China",
      "id": "6cb77610a8a543aea2d6bc10457e35d4"
-    }
+    },
+    "startDate": "2026-11-19",
+    "postedOn": "Posted Yesterday"
    }
   }
  },
@@ -2051,7 +2067,9 @@
     "country": {
      "descriptor": "South Africa",
      "id": "4db3c26940b944919b83612cc1193eed"
-    }
+    },
+    "startDate": "2026-11-18",
+    "postedOn": "Posted 2 Days Ago"
    }
   }
  },
@@ -2066,7 +2084,9 @@
     "country": {
      "descriptor": "United States of America",
      "id": "bc33aa3152ec42d4995f4791a106ed09"
-    }
+    },
+    "startDate": "2026-10-15",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -2132,7 +2152,9 @@
     "country": {
      "descriptor": "United States of America",
      "id": "bc33aa3152ec42d4995f4791a106ed09"
-    }
+    },
+    "startDate": "2026-10-27",
+    "postedOn": "Posted 24 Days Ago"
    }
   }
  },
@@ -2147,7 +2169,9 @@
     "country": {
      "descriptor": "Netherlands",
      "id": "9696868b09c64d52a62ee13b052383cc"
-    }
+    },
+    "startDate": "2026-10-30",
+    "postedOn": "Posted 21 Days Ago"
    }
   }
  },
@@ -2162,7 +2186,9 @@
     "country": {
      "descriptor": "India",
      "id": "c4f78be1a8f14da0ab49ce1162348a5e"
-    }
+    },
+    "startDate": "2026-11-02",
+    "postedOn": "Posted 18 Days Ago"
    }
   }
  },
@@ -2177,7 +2203,9 @@
     "country": {
      "descriptor": "India",
      "id": "c4f78be1a8f14da0ab49ce1162348a5e"
-    }
+    },
+    "startDate": "2026-11-02",
+    "postedOn": "Posted 18 Days Ago"
    }
   }
  },
@@ -2195,7 +2223,9 @@
     "country": {
      "descriptor": "India",
      "id": "c4f78be1a8f14da0ab49ce1162348a5e"
-    }
+    },
+    "startDate": "2026-11-02",
+    "postedOn": "Posted 18 Days Ago"
    }
   }
  },
@@ -2210,7 +2240,9 @@
     "country": {
      "descriptor": "India",
      "id": "c4f78be1a8f14da0ab49ce1162348a5e"
-    }
+    },
+    "startDate": "2026-11-02",
+    "postedOn": "Posted 18 Days Ago"
    }
   }
  },
@@ -2225,7 +2257,9 @@
     "country": {
      "descriptor": "India",
      "id": "c4f78be1a8f14da0ab49ce1162348a5e"
-    }
+    },
+    "startDate": "2026-11-02",
+    "postedOn": "Posted 18 Days Ago"
    }
   }
  },
@@ -2240,7 +2274,9 @@
     "country": {
      "descriptor": "China",
      "id": "6cb77610a8a543aea2d6bc10457e35d4"
-    }
+    },
+    "startDate": "2026-11-05",
+    "postedOn": "Posted 15 Days Ago"
    }
   }
  },
@@ -2255,7 +2291,9 @@
     "country": {
      "descriptor": "China",
      "id": "6cb77610a8a543aea2d6bc10457e35d4"
-    }
+    },
+    "startDate": "2026-11-09",
+    "postedOn": "Posted 11 Days Ago"
    }
   }
  },
@@ -2270,7 +2308,9 @@
     "country": {
      "descriptor": "Netherlands",
      "id": "9696868b09c64d52a62ee13b052383cc"
-    }
+    },
+    "startDate": "2026-11-09",
+    "postedOn": "Posted 11 Days Ago"
    }
   }
  },
@@ -2285,7 +2325,9 @@
     "country": {
      "descriptor": "China",
      "id": "6cb77610a8a543aea2d6bc10457e35d4"
-    }
+    },
+    "startDate": "2026-09-08",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -2300,7 +2342,9 @@
     "country": {
      "descriptor": "Spain",
      "id": "bd34c524a6a04ae6915f5d96fa086199"
-    }
+    },
+    "startDate": "2026-11-17",
+    "postedOn": "Posted 3 Days Ago"
    }
   }
  },
@@ -2315,7 +2359,9 @@
     "country": {
      "descriptor": "Taiwan",
      "id": "a4e08b475d6a4176853c9d1cb9854e02"
-    }
+    },
+    "startDate": "2026-11-16",
+    "postedOn": "Posted 4 Days Ago"
    }
   }
  },
@@ -2330,7 +2376,9 @@
     "country": {
      "descriptor": "France",
      "id": "54c5b6971ffb4bf0b116fe7651ec789a"
-    }
+    },
+    "startDate": "2026-11-16",
+    "postedOn": "Posted 4 Days Ago"
    }
   }
  },
@@ -2345,7 +2393,9 @@
     "country": {
      "descriptor": "Poland",
      "id": "131d5ac7e3ee4d7b962bdc96e498e412"
-    }
+    },
+    "startDate": "2026-11-19",
+    "postedOn": "Posted Yesterday"
    }
   }
  },
@@ -2363,7 +2413,9 @@
     "country": {
      "descriptor": "Netherlands",
      "id": "9696868b09c64d52a62ee13b052383cc"
-    }
+    },
+    "startDate": "2026-11-19",
+    "postedOn": "Posted Yesterday"
    }
   }
  },
@@ -2378,7 +2430,9 @@
     "country": {
      "descriptor": "China",
      "id": "6cb77610a8a543aea2d6bc10457e35d4"
-    }
+    },
+    "startDate": "2026-11-09",
+    "postedOn": "Posted 11 Days Ago"
    }
   }
  },
@@ -2393,7 +2447,9 @@
     "country": {
      "descriptor": "United States of America",
      "id": "bc33aa3152ec42d4995f4791a106ed09"
-    }
+    },
+    "startDate": "2026-09-28",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -2411,7 +2467,9 @@
     "country": {
      "descriptor": "United States of America",
      "id": "bc33aa3152ec42d4995f4791a106ed09"
-    }
+    },
+    "startDate": "2026-09-10",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -2426,7 +2484,9 @@
     "country": {
      "descriptor": "India",
      "id": "c4f78be1a8f14da0ab49ce1162348a5e"
-    }
+    },
+    "startDate": "2026-11-10",
+    "postedOn": "Posted 10 Days Ago"
    }
   }
  },
@@ -2441,7 +2501,9 @@
     "country": {
      "descriptor": "Germany",
      "id": "dcc5b7608d8644b3a93716604e78e995"
-    }
+    },
+    "startDate": "2026-11-09",
+    "postedOn": "Posted 11 Days Ago"
    }
   }
  },
@@ -2456,7 +2518,9 @@
     "country": {
      "descriptor": "India",
      "id": "c4f78be1a8f14da0ab49ce1162348a5e"
-    }
+    },
+    "startDate": "2026-10-06",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -2471,7 +2535,9 @@
     "country": {
      "descriptor": "India",
      "id": "c4f78be1a8f14da0ab49ce1162348a5e"
-    }
+    },
+    "startDate": "2026-11-02",
+    "postedOn": "Posted 18 Days Ago"
    }
   }
  },
@@ -2486,7 +2552,9 @@
     "country": {
      "descriptor": "India",
      "id": "c4f78be1a8f14da0ab49ce1162348a5e"
-    }
+    },
+    "startDate": "2026-11-18",
+    "postedOn": "Posted 2 Days Ago"
    }
   }
  },
@@ -2501,7 +2569,9 @@
     "country": {
      "descriptor": "India",
      "id": "c4f78be1a8f14da0ab49ce1162348a5e"
-    }
+    },
+    "startDate": "2026-11-20",
+    "postedOn": "Posted Today"
    }
   }
  },
@@ -2516,7 +2586,9 @@
     "country": {
      "descriptor": "France",
      "id": "54c5b6971ffb4bf0b116fe7651ec789a"
-    }
+    },
+    "startDate": "2026-11-20",
+    "postedOn": "Posted Today"
    }
   }
  },
@@ -2531,7 +2603,9 @@
     "country": {
      "descriptor": "Hong Kong",
      "id": "d4afdeb461d446e4babd204bd102dba8"
-    }
+    },
+    "startDate": "2026-11-06",
+    "postedOn": "Posted 14 Days Ago"
    }
   }
  },
@@ -2546,7 +2620,9 @@
     "country": {
      "descriptor": "Japan",
      "id": "8b705da2becf43cfaccc091da0988ab2"
-    }
+    },
+    "startDate": "2026-09-15",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -2561,7 +2637,9 @@
     "country": {
      "descriptor": "Japan",
      "id": "8b705da2becf43cfaccc091da0988ab2"
-    }
+    },
+    "startDate": "2026-09-16",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -2576,7 +2654,9 @@
     "country": {
      "descriptor": "Japan",
      "id": "8b705da2becf43cfaccc091da0988ab2"
-    }
+    },
+    "startDate": "2026-09-28",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -2591,7 +2671,9 @@
     "country": {
      "descriptor": "Japan",
      "id": "8b705da2becf43cfaccc091da0988ab2"
-    }
+    },
+    "startDate": "2026-11-05",
+    "postedOn": "Posted 15 Days Ago"
    }
   }
  },
@@ -2606,7 +2688,9 @@
     "country": {
      "descriptor": "Japan",
      "id": "8b705da2becf43cfaccc091da0988ab2"
-    }
+    },
+    "startDate": "2026-10-13",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -2621,7 +2705,9 @@
     "country": {
      "descriptor": "Japan",
      "id": "8b705da2becf43cfaccc091da0988ab2"
-    }
+    },
+    "startDate": "2026-10-20",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -2636,7 +2722,9 @@
     "country": {
      "descriptor": "Japan",
      "id": "8b705da2becf43cfaccc091da0988ab2"
-    }
+    },
+    "startDate": "2026-10-22",
+    "postedOn": "Posted 29 Days Ago"
    }
   }
  },
@@ -2651,7 +2739,9 @@
     "country": {
      "descriptor": "Japan",
      "id": "8b705da2becf43cfaccc091da0988ab2"
-    }
+    },
+    "startDate": "2026-10-23",
+    "postedOn": "Posted 28 Days Ago"
    }
   }
  },
@@ -2666,7 +2756,9 @@
     "country": {
      "descriptor": "Japan",
      "id": "8b705da2becf43cfaccc091da0988ab2"
-    }
+    },
+    "startDate": "2026-11-09",
+    "postedOn": "Posted 11 Days Ago"
    }
   }
  },
@@ -2681,7 +2773,9 @@
     "country": {
      "descriptor": "Japan",
      "id": "8b705da2becf43cfaccc091da0988ab2"
-    }
+    },
+    "startDate": "2026-11-11",
+    "postedOn": "Posted 9 Days Ago"
    }
   }
  },
@@ -2696,7 +2790,9 @@
     "country": {
      "descriptor": "Japan",
      "id": "8b705da2becf43cfaccc091da0988ab2"
-    }
+    },
+    "startDate": "2026-04-03",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -3551,7 +3647,9 @@
   "estado": 200,
   "json": {
    "jobPostingInfo": {
-    "location": ""
+    "location": "",
+    "startDate": "2026-11-04",
+    "postedOn": "Posted 16 Days Ago"
    }
   }
  },
@@ -3562,7 +3660,9 @@
   "estado": 200,
   "json": {
    "jobPostingInfo": {
-    "location": ""
+    "location": "",
+    "startDate": "2026-11-04",
+    "postedOn": "Posted 16 Days Ago"
    }
   }
  },
@@ -3573,7 +3673,9 @@
   "estado": 200,
   "json": {
    "jobPostingInfo": {
-    "location": ""
+    "location": "",
+    "startDate": "2025-07-29",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -3588,7 +3690,9 @@
     "country": {
      "descriptor": "Germany",
      "id": "dcc5b7608d8644b3a93716604e78e995"
-    }
+    },
+    "startDate": "2026-09-30",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -3603,7 +3707,9 @@
     "country": {
      "descriptor": "Germany",
      "id": "dcc5b7608d8644b3a93716604e78e995"
-    }
+    },
+    "startDate": "2026-07-03",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -4027,7 +4133,9 @@
     "country": {
      "descriptor": "Germany",
      "id": "dcc5b7608d8644b3a93716604e78e995"
-    }
+    },
+    "startDate": "2026-10-08",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -4042,7 +4150,9 @@
     "country": {
      "descriptor": "Spain",
      "id": "bd34c524a6a04ae6915f5d96fa086199"
-    }
+    },
+    "startDate": "2026-11-04",
+    "postedOn": "Posted 16 Days Ago"
    }
   }
  },
@@ -4057,7 +4167,9 @@
     "country": {
      "descriptor": "Spain",
      "id": "bd34c524a6a04ae6915f5d96fa086199"
-    }
+    },
+    "startDate": "2026-10-15",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  },
@@ -4072,7 +4184,9 @@
     "country": {
      "descriptor": "Spain",
      "id": "bd34c524a6a04ae6915f5d96fa086199"
-    }
+    },
+    "startDate": "2026-10-30",
+    "postedOn": "Posted 21 Days Ago"
    }
   }
  },
@@ -4087,7 +4201,9 @@
     "country": {
      "descriptor": "Spain",
      "id": "bd34c524a6a04ae6915f5d96fa086199"
-    }
+    },
+    "startDate": "2026-10-15",
+    "postedOn": "Posted 30+ Days Ago"
    }
   }
  }

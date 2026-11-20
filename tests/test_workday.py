@@ -4,7 +4,7 @@ from buscador.config import Ajustes, Empresa
 from buscador.fuentes import FuenteWorkday, crear_fuente
 from buscador.fuentes.workday import datos_workday
 from buscador.http import ClienteHttp
-from buscador.modelos import Resultado
+from buscador.modelos import Detalle, Resultado
 from conftest import RespuestaFalsa
 
 
@@ -87,15 +87,22 @@ def test_buscar_ignora_resultados_sin_enlace():
     assert [r.titulo for r in fuente(portal).buscar(["intern"])] == ["Intern 1"]
 
 
-def test_ubicacion_detallada_une_ubicaciones_y_pais():
+def test_detalle_une_ubicaciones_y_pais_y_lee_la_fecha():
     api = "https://medtronic.wd1.myworkdayjobs.com/wday/cxs/medtronic/MedtronicCareers/job/X"
     portal = PortalFalso({}, {api: {"jobPostingInfo": {
         "location": "Madrid", "additionalLocations": ["Barcelona", {"descriptor": "Lisboa"}],
-        "country": {"descriptor": "Spain"}}}})
+        "country": {"descriptor": "Spain"}, "startDate": "2026-10-30"}}})
     r = Resultado("Intern", "2 Locations", "", "u", "/job/X")
-    assert fuente(portal).ubicacion_detallada(r) == ("Madrid, Barcelona, Lisboa, Spain", True)
+    assert fuente(portal).detalle(r) == Detalle("Madrid, Barcelona, Lisboa, Spain", True, "2026-10-30")
 
 
-def test_ubicacion_detallada_si_falla_devuelve_sin_verificar():
+def test_detalle_sin_fecha_o_con_fecha_rara():
+    api = "https://medtronic.wd1.myworkdayjobs.com/wday/cxs/medtronic/MedtronicCareers/job/X"
+    portal = PortalFalso({}, {api: {"jobPostingInfo": {"location": "Madrid", "startDate": "pronto"}}})
+    r = Resultado("Intern", "Madrid", "", "u", "/job/X")
+    assert fuente(portal).detalle(r) == Detalle("Madrid", True, "")
+
+
+def test_detalle_si_falla_devuelve_sin_verificar():
     r = Resultado("Intern", "2 Locations", "", "u", "/job/NoExiste")
-    assert fuente(PortalFalso({})).ubicacion_detallada(r) == ("", False)
+    assert fuente(PortalFalso({})).detalle(r) == Detalle("", False)

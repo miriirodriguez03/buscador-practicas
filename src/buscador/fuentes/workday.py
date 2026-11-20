@@ -2,8 +2,9 @@
 import re
 from urllib.parse import urlparse
 
+from buscador.fechas import fecha_iso_valida
 from buscador.fuentes.base import Fuente
-from buscador.modelos import Resultado
+from buscador.modelos import Detalle, Resultado
 
 TAM_PAGINA = 20
 
@@ -63,7 +64,7 @@ class FuenteWorkday(Fuente):
                           url=f"https://{self.host}/{self.portal}{ruta}", ruta=ruta)
                 for ruta, o in encontradas.items()]
 
-    def ubicacion_detallada(self, resultado):
+    def detalle(self, resultado):
         try:
             respuesta = self.cliente.peticion("GET", f"{self._api}{resultado.ruta}")
             info = respuesta.json().get("jobPostingInfo", {})
@@ -72,6 +73,7 @@ class FuenteWorkday(Fuente):
                 trozos.append(extra if isinstance(extra, str) else str(extra.get("descriptor", "")))
             trozos.append((info.get("country") or {}).get("descriptor", ""))
             texto = ", ".join(t for t in trozos if t)
-            return texto, bool(texto)
+            # startDate es la fecha en que se publicó la oferta (AAAA-MM-DD)
+            return Detalle(texto, bool(texto), fecha_iso_valida(info.get("startDate")))
         except Exception:
-            return "", False
+            return Detalle("", False)
