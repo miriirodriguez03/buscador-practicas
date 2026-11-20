@@ -10,13 +10,14 @@ Como GitHub te notifica los issues, te llega el aviso al correo o al móvil.
 
 ## Cómo funciona
 
-1. **GitHub Actions** (`.github/workflows/buscar.yml`) ejecuta `buscar_ofertas.py`
-   dos veces al día (07:17 y 16:17 UTC). También se puede lanzar a mano desde la
-   pestaña *Actions* → *Buscar ofertas de prácticas* → *Run workflow*.
+1. **Tu PC** ejecuta `ejecutar_local.ps1` todos los días (por defecto a las 09:00 y
+   18:00) mediante el Programador de tareas de Windows. Si el PC está apagado a
+   esa hora, se ejecuta al encenderlo. No se usa GitHub Actions porque Workday
+   bloquea las peticiones que salen de GitHub (ver *Problemas conocidos*).
 2. El script consulta cada portal, filtra por título y abre la ficha de cada oferta
    para conocer su ubicación real.
 3. Las ofertas nuevas se escriben en `nuevas_espana.md` y `nuevas_internacional.md`,
-   y el workflow abre un issue por cada archivo.
+   y se abre un issue por cada archivo con la CLI de GitHub (`gh`).
 4. Solo después de crear los avisos se guarda `ofertas_vistas.csv`, el registro de
    todas las ofertas ya revisadas, para no avisar dos veces de la misma.
 
@@ -37,22 +38,37 @@ Todo se ajusta en [`config.yaml`](config.yaml), sin tocar el código:
 Para añadir una empresa, copia un bloque de dos líneas (`nombre` y `url`) con la
 dirección de su portal `*.myworkdayjobs.com`.
 
-## Ejecutarlo en tu ordenador
+## Instalación en el PC (una sola vez)
+
+Requisitos: Git, Python 3.12 y la CLI de GitHub (`winget install GitHub.cli`), con
+sesión iniciada (`gh auth login`).
 
 ```powershell
-python -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe buscar_ofertas.py
+# Registrar la tarea diaria (09:00 y 18:00 por defecto)
+powershell -ExecutionPolicy Bypass -File .\instalar_tarea.ps1
+
+# Otras horas
+powershell -ExecutionPolicy Bypass -File .\instalar_tarea.ps1 -Horas "08:30","20:00"
+
+# Lanzarlo a mano en cualquier momento
+powershell -ExecutionPolicy Bypass -File .\ejecutar_local.ps1
+
+# Quitar la tarea
+Unregister-ScheduledTask -TaskName "Buscador de practicas" -Confirm:$false
 ```
 
-Ojo: al ejecutarlo en local se actualiza `ofertas_vistas.csv`. Si subes ese
-archivo sin haber creado los avisos, esas ofertas no se volverán a notificar.
+`ejecutar_local.ps1` actualiza el repositorio, crea el entorno de Python si no
+existe, busca, crea los issues y sube `ofertas_vistas.csv`. Si algo falla, deja el
+CSV como estaba, de modo que la siguiente ejecución vuelve a avisar de esas
+ofertas. Cada ejecución queda registrada en `logs/` (que no se sube al repositorio).
 
 ## Problemas conocidos
 
-- **Workday limita las peticiones desde los servidores de GitHub.** Si todas las
-  empresas fallan con código 429, la ejecución termina en error; el resumen final
-  del log indica cuántas respuestas hubo de cada código HTTP.
+- **Workday bloquea las peticiones desde los servidores de GitHub**: todas
+  responden 429 incluso tras reintentar, mientras que desde una conexión
+  doméstica funcionan. Por eso la búsqueda programada se hace desde el PC y el
+  workflow de GitHub Actions solo se lanza a mano.
+- Solo se busca cuando el PC está encendido.
 - Las ofertas descartadas por los filtros también se guardan como vistas, así que
   si amplías los filtros no se vuelven a evaluar. Se corregirá en la fase 2.
 - Lilly, Takeda y Sanofi (programas de estudiantes) están desactivadas en

@@ -1,10 +1,13 @@
 name: Buscar ofertas de prácticas
 
+# La búsqueda programada se hace desde el PC (ejecutar_local.ps1 + instalar_tarea.ps1)
+# porque Workday responde 429 a todas las peticiones que salen de GitHub.
+# Este workflow queda solo para lanzarlo a mano. Si algún día vuelve a funcionar
+# desde GitHub, basta con añadir de nuevo:
+#   schedule:
+#     - cron: "17 7,16 * * *"
+# (y quitar la tarea del PC, para que no se ejecuten los dos a la vez).
 on:
-  schedule:
-    # Todos los días a las 07:17 y 16:17 UTC. Se evita el minuto 0 porque
-    # a esa hora GitHub retrasa o salta muchas ejecuciones programadas.
-    - cron: "17 7,16 * * *"
   workflow_dispatch:          # permite lanzarlo a mano con un botón
 
 permissions:
