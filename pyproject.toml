@@ -1,7 +1,7 @@
-﻿[project]
+[project]
 name = "buscador-practicas"
 version = "0.3.0"
-description = "Buscador automÃ¡tico de ofertas de prÃ¡cticas en portales de empleo"
+description = "Buscador automático de ofertas de prácticas en portales de empleo"
 requires-python = ">=3.12"
 dependencies = ["requests", "PyYAML"]
 
