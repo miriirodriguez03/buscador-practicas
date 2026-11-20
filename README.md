@@ -35,8 +35,27 @@ Todo se ajusta en [`config.yaml`](config.yaml), sin tocar el código:
 | `ubicaciones_internacionales` | Países aceptados fuera de España (`[]` = todos) |
 | `empresas` | Nombre y dirección Workday de cada empresa |
 
+| `ajustes` *(opcional)* | `pausa` entre peticiones (s), `max_por_termino`, `max_en_aviso` |
+
 Para añadir una empresa, copia un bloque de dos líneas (`nombre` y `url`) con la
 dirección de su portal `*.myworkdayjobs.com`.
+
+Al arrancar se valida `config.yaml`: si hay un error de estructura (sangría,
+tabuladores, una lista mal escrita…) el programa se detiene explicando qué
+corregir, y avisa de claves desconocidas por si hay una errata.
+
+## Probar cambios sin consecuencias
+
+```powershell
+# Busca y muestra las ofertas nuevas sin guardar el registro ni crear avisos
+.\.venv\Scripts\python.exe buscar_ofertas.py --dry-run
+
+# Solo algunas empresas (útil al añadir una nueva a config.yaml)
+.\.venv\Scripts\python.exe buscar_ofertas.py --dry-run --empresa Almirall --empresa Philips
+
+# Todas las opciones
+.\.venv\Scripts\python.exe buscar_ofertas.py --help
+```
 
 ## Instalación en el PC (una sola vez)
 
@@ -61,6 +80,40 @@ Unregister-ScheduledTask -TaskName "Buscador de practicas" -Confirm:$false
 existe, busca, crea los issues y sube `ofertas_vistas.csv`. Si algo falla, deja el
 CSV como estaba, de modo que la siguiente ejecución vuelve a avisar de esas
 ofertas. Cada ejecución queda registrada en `logs/` (que no se sube al repositorio).
+
+## Estructura del código
+
+```
+buscar_ofertas.py          punto de entrada (lo usan ejecutar_local.ps1 y el workflow)
+src/buscador/
+  cli.py                   opciones de línea de comandos y resumen final
+  config.py                lectura y validación de config.yaml
+  pipeline.py              recorre empresas, filtra y decide qué ofertas son nuevas
+  filtros.py               filtro por título y clasificación España / otros países
+  fuentes/base.py          interfaz común de los portales de empleo
+  fuentes/workday.py       portales Workday (*.myworkdayjobs.com)
+  http.py                  peticiones con pausas y reintentos (429, 5xx, cortes de red)
+  almacen.py               ofertas_vistas.csv
+  avisos.py                textos Markdown de los avisos
+  modelos.py               estructuras de datos compartidas
+tests/                     tests (pytest) con respuestas reales de Workday grabadas
+```
+
+Para añadir otro tipo de portal (SuccessFactors, Greenhouse…) se crea una clase en
+`src/buscador/fuentes/` que herede de `Fuente` y se registra en `crear_fuente`.
+
+### Tests
+
+```powershell
+.\.venv\Scripts\python.exe -m pip install -r requirements-dev.txt
+.\.venv\Scripts\python.exe -m pytest
+```
+
+`tests/test_extremo_a_extremo.py` reproduce 91 respuestas reales de Workday y
+comprueba que el CSV y los avisos generados son idénticos a los del programa
+original. Los tests también se ejecutan en GitHub Actions en cada cambio
+(`.github/workflows/tests.yml`); no consultan Workday, así que no les afecta el
+bloqueo.
 
 ## Problemas conocidos
 
