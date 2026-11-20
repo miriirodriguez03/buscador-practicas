@@ -21,6 +21,33 @@ Como GitHub te notifica los issues, te llega el aviso al correo o al móvil.
 4. Solo después de crear los avisos se guarda `ofertas_vistas.csv`, el registro de
    todas las ofertas ya revisadas, para no avisar dos veces de la misma.
 
+## El registro de ofertas (`ofertas_vistas.csv`)
+
+Guarda **todas** las ofertas que han aparecido en las búsquedas, pasen o no los
+filtros. Se puede abrir en Excel o verlo directamente en GitHub.
+
+- Cada ejecución **vuelve a evaluar las ofertas que siguen publicadas y aún no se
+  han avisado**. Si amplías un filtro (por ejemplo, añades un país o una palabra),
+  te llegarán las que antes se descartaron; el resumen final indica cuántas.
+- Una oferta avisada (`avisada_el` con fecha) **no se vuelve a avisar nunca**.
+- La ficha de cada oferta se abre una sola vez; de ahí salen la ubicación completa
+  y la **fecha exacta de publicación**, que es la que aparece en los avisos.
+
+| Columna | Contenido |
+|---|---|
+| `url` | Enlace a la oferta (la identifica) |
+| `empresa`, `titulo` | Datos del portal (se actualizan en cada ejecución) |
+| `categoria`, `pasa_filtro` | Resultado de la última evaluación: `espana` / `internacional` / vacío, y `si` / `no` |
+| `ubicacion`, `ubicacion_verificada` | Ubicación completa si se pudo leer la ficha (`si`); si falló, `no` |
+| `publicada` | Texto del portal, p. ej. `Posted 3 Days Ago` |
+| `fecha_publicacion`, `fecha_exacta` | Fecha AAAA-MM-DD; `si` si viene de la ficha, `no` si se estimó del texto |
+| `primera_vez`, `ultima_vez` | Primera y última fecha en que la oferta estaba publicada |
+| `avisada_el` | Fecha del aviso; vacío si no se ha avisado |
+
+Si el archivo está en el formato antiguo (el de antes de la fase 2), se convierte
+solo en la primera ejecución; las ofertas que entonces pasaban el filtro se marcan
+como ya avisadas.
+
 ## Configuración
 
 Todo se ajusta en [`config.yaml`](config.yaml), sin tocar el código:
@@ -88,12 +115,13 @@ buscar_ofertas.py          punto de entrada (lo usan ejecutar_local.ps1 y el wor
 src/buscador/
   cli.py                   opciones de línea de comandos y resumen final
   config.py                lectura y validación de config.yaml
-  pipeline.py              recorre empresas, filtra y decide qué ofertas son nuevas
+  pipeline.py              recorre empresas, actualiza el registro y decide qué avisar
+  fechas.py                fechas de publicación (exactas o estimadas)
   filtros.py               filtro por título y clasificación España / otros países
   fuentes/base.py          interfaz común de los portales de empleo
   fuentes/workday.py       portales Workday (*.myworkdayjobs.com)
   http.py                  peticiones con pausas y reintentos (429, 5xx, cortes de red)
-  almacen.py               ofertas_vistas.csv
+  almacen.py               ofertas_vistas.csv (y conversión del formato antiguo)
   avisos.py                textos Markdown de los avisos
   modelos.py               estructuras de datos compartidas
 tests/                     tests (pytest) con respuestas reales de Workday grabadas
@@ -110,8 +138,8 @@ Para añadir otro tipo de portal (SuccessFactors, Greenhouse…) se crea una cla
 ```
 
 `tests/test_extremo_a_extremo.py` reproduce 91 respuestas reales de Workday y
-comprueba que el CSV y los avisos generados son idénticos a los del programa
-original. Los tests también se ejecutan en GitHub Actions en cada cambio
+comprueba el CSV y los avisos generados, la conversión del formato antiguo, que
+ampliar un filtro recupera ofertas descartadas y que nunca se repite un aviso. Los tests también se ejecutan en GitHub Actions en cada cambio
 (`.github/workflows/tests.yml`); no consultan Workday, así que no les afecta el
 bloqueo.
 
@@ -122,7 +150,9 @@ bloqueo.
   doméstica funcionan. Por eso la búsqueda programada se hace desde el PC y el
   workflow de GitHub Actions solo se lanza a mano.
 - Solo se busca cuando el PC está encendido.
-- Las ofertas descartadas por los filtros también se guardan como vistas, así que
-  si amplías los filtros no se vuelven a evaluar. Se corregirá en la fase 2.
+- Solo se reevalúan las ofertas que siguen publicadas: si una oferta descartada ya
+  ha caducado, no se recupera aunque amplíes los filtros.
+- Algunos portales no indican en el listado cuándo se publicó la oferta; si además
+  no pasa el filtro de título (y por tanto no se abre su ficha), queda sin fecha.
 - Lilly, Takeda y Sanofi (programas de estudiantes) están desactivadas en
   `config.yaml` porque sus direcciones ya no funcionan.

@@ -56,6 +56,9 @@ def main(argv=None, enviar=None, dormir=None, hoy=None, log=print):
     almacen = AlmacenCsv(args.vistas)
     vistas = almacen.cargar()
     hoy = hoy or date.today().isoformat()
+    if almacen.migradas:
+        log(f"ℹ️  {args.vistas} está en el formato antiguo: se convierte al nuevo "
+            f"({almacen.migradas} ofertas; las que pasaban el filtro se marcan como ya avisadas).")
 
     resultado = ejecutar(config, lambda e: crear_fuente(e, cliente, config.ajustes), vistas, hoy, log=log)
 
@@ -72,6 +75,9 @@ def main(argv=None, enviar=None, dormir=None, hoy=None, log=print):
 
     log(f"\nTotal: {resultado.total_espana} nuevas en España y "
         f"{resultado.total_internacional} nuevas en otros países.")
+    if resultado.recuperadas:
+        log(f"ℹ️  {resultado.recuperadas} de ellas ya se habían visto antes y no encajaban, "
+            "pero ahora sí encajan con tus filtros.")
     log(f"Peticiones por código HTTP -> {cliente.resumen() or 'ninguna'} "
         f"(esperado en reintentos: {cliente.esperado:.0f} s; "
         f"empresas con error: {resultado.fallos}/{len(config.empresas)})")
