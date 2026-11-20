@@ -1,6 +1,7 @@
 """Ejecuta el programa completo contra 91 respuestas reales de Workday grabadas
-(Medtronic, CompuGroup Medical y Almirall) y exige el mismo resultado, byte a byte,
-que produjo el script original (buscar_ofertas.py de la fase 0) con esas respuestas."""
+(Medtronic, CompuGroup Medical y Almirall) y exige el mismo resultado (contenido
+idéntico, sin contar los finales de línea, que dependen del sistema operativo) que
+produjo el script original (buscar_ofertas.py de la fase 0) con esas respuestas."""
 import shutil
 
 import pytest

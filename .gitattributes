@@ -1,0 +1,3 @@
+# Los fixtures de los tests son respuestas y salidas grabadas: se guardan tal cual,
+# sin que Git cambie sus finales de línea.
+tests/fixtures/** -text
