@@ -75,19 +75,28 @@ def segundos_retry_after(respuesta):
 
 
 def peticion(metodo, url, **opciones):
-    """Hace la petición HTTP. Si el portal responde 429 o un error temporal 5xx, espera y
-    reintenta (respetando Retry-After y el presupuesto total de esperas). Si no se recupera,
-    lanza el error igual que antes."""
+    """Hace la petición HTTP. Si el portal responde 429 o un error temporal 5xx, o si la
+    conexión falla (corte de red, DNS, timeout), espera y reintenta (respetando Retry-After
+    y el presupuesto total de esperas). Si no se recupera, lanza el error igual que antes."""
     global _esperado
     for intento in range(len(REINTENTOS) + 1):
-        respuesta = requests.request(metodo, url, headers=CABECERAS, timeout=30, **opciones)
-        _respuestas[respuesta.status_code] = _respuestas.get(respuesta.status_code, 0) + 1
-        if respuesta.status_code not in CODIGOS_REINTENTABLES or intento == len(REINTENTOS):
-            break
-        espera = min(segundos_retry_after(respuesta) or REINTENTOS[intento], ESPERA_MAXIMA_REINTENTO)
-        if _esperado + espera > PRESUPUESTO_ESPERAS:
-            break  # ya se ha esperado bastante en esta ejecución: no se insiste más
-        print(f"   ⏳ {urlparse(url).netloc} respondió {respuesta.status_code}; reintento en {espera:.0f} s")
+        ultimo = intento == len(REINTENTOS)
+        try:
+            respuesta = requests.request(metodo, url, headers=CABECERAS, timeout=30, **opciones)
+        except (requests.ConnectionError, requests.Timeout) as error:
+            _respuestas["sin conexión"] = _respuestas.get("sin conexión", 0) + 1
+            if ultimo or _esperado + REINTENTOS[intento] > PRESUPUESTO_ESPERAS:
+                raise
+            motivo, espera = f"sin conexión ({type(error).__name__})", REINTENTOS[intento]
+        else:
+            _respuestas[respuesta.status_code] = _respuestas.get(respuesta.status_code, 0) + 1
+            if respuesta.status_code not in CODIGOS_REINTENTABLES or ultimo:
+                break
+            espera = min(segundos_retry_after(respuesta) or REINTENTOS[intento], ESPERA_MAXIMA_REINTENTO)
+            if _esperado + espera > PRESUPUESTO_ESPERAS:
+                break  # ya se ha esperado bastante en esta ejecución: no se insiste más
+            motivo = f"respondió {respuesta.status_code}"
+        print(f"   ⏳ {urlparse(url).netloc} {motivo}; reintento en {espera:.0f} s")
         time.sleep(espera)
         _esperado += espera
     respuesta.raise_for_status()
@@ -246,7 +255,7 @@ def main():
     escribir_avisos(nuevas, config.get("usuario_github"))
     total_es = sum(1 for o in nuevas if o["categoria"] == "espana")
     print(f"\nTotal: {total_es} nuevas en España y {len(nuevas) - total_es} nuevas en otros países.")
-    codigos = ", ".join(f"{c}: {n}" for c, n in sorted(_respuestas.items()))
+    codigos = ", ".join(f"{c}: {n}" for c, n in sorted(_respuestas.items(), key=lambda par: str(par[0])))
     print(f"Peticiones por código HTTP -> {codigos or 'ninguna'} "
           f"(esperado en reintentos: {_esperado:.0f} s; empresas con error: {fallos}/{len(empresas)})")
 
